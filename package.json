@@ -1,0 +1,35 @@
+{
+  "name": "pladvert",
+  "version": "1.0.0",
+  "description": "Backend Service for accommodations advertisement and booking system",
+  "main": "server.js",
+  "scripts": {
+    "start:dev":"nodemon server.js",
+    "start:prod":"node server.js"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davinyiringabo/pladvert_backend.git"
+  },
+  "keywords": [
+    "Accommodations",
+    "Find",
+    "Accommodations",
+    "Hotels"
+  ],
+  "author": "David NYIRINGABO",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davinyiringabo/pladvert_backend/issues"
+  },
+  "homepage": "https://github.com/davinyiringabo/pladvert_backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.0",
+    "pgsql": "^1.0.0"
+  }
+}
