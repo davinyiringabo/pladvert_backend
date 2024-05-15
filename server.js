@@ -1,11 +1,16 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const authRoutes = require("./routes/auth.routes")
-app.get('/', (req, res)=>{
-    res.send('hello world');
-})
+const cors = require("cors");
+const dotenv = require("dotenv");
+const authRoutes = require("./routes/auth.routes");
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cors());
+dotenv.config();
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
 app.use("/api/v1/auth", require("./routes/auth.routes"));
-app.listen(5454, ()=>{
-    console.log('server is running on port 5454');
-})
-
+app.listen(5454, () => {
+  console.log("server is running on port 5454");
+});

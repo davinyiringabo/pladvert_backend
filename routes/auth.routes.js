@@ -1,5 +1,12 @@
-const {login, signup, signupOwner, verifyCode, resetPassword, sendCode} = require("../controllers/auth.controllers")
-const express = require('express');
+const {
+  login,
+  signup,
+  signupOwner,
+  verifyCode,
+  resetPassword,
+  sendCode,
+} = require("../controllers/auth.controllers");
+const express = require("express");
 const router = express.Router();
 router.post("/login", login);
 router.post("/signup/user", signup);
