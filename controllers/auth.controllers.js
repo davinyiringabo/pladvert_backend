@@ -4,21 +4,27 @@ const generateToken = require("../utils/generateToken.js");
 const sendEmail = require("../utils/sendEmail.js");
 const bcrypt = require("bcrypt");
 const joi = require("joi");
-const { loginSchema } = require("../models/joi.schema.js");
+const { loginSchema, registerSchema } = require("../models/joi.schema.js");
 const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
+const { generateOTP } = require("../utils/generateOTP.js");
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  if(!email || !password) {
+    res.status(400).send({ message: "Fill All Fields Please", status: 400 });
+    return;
 
+  }
   const { error } = loginSchema.validate({ email, password });
   if (error) {
     res.status(400).send({ message: error.details[0].message, status: 400 });
     return;
   }
-
+  
   try {
     const query = "SELECT * FROM users where email = $1";
-    const data = await client.query(query, [email]);
+    const data = await client.query(query,[email]);
 
     if (data.rows.length === 0) {
       res
@@ -47,6 +53,7 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: "Internal server error" });
+    return;
   }
 };
 
@@ -68,33 +75,37 @@ exports.signup = async (req, res) => {
     }
     const userId = uuidv4();
 
-    try {
-      const validated = await credsSchema.validateAsync({
-        email: email,
-        password: password,
+      const {error} = registerSchema.validate({
+        email,
+        password,
+        role,
+        phone,
       });
+
+      if(error){
+        res.status(400).send({ message: error.details[0].message });
+        return;
+      }
 
       const encrypted = await bcrypt.hash(password, 15);
       const insertQuery =
-        "INSERT INTO users (email, password, id) VALUES ($1, $2, $3)";
+        "INSERT INTO users (email, password, role, phone, id) VALUES ($1, $2, $3, $4, $5)";
       const insertData = await client.query(insertQuery, [
         email,
         encrypted,
+        role,
+        phone,
         userId,
       ]);
       console.log("User inserted:", insertData.rows[0]);
       const otp = await generateOTP(email, res);
       console.log(otp);
-      if (sendEmail(email, otp)) {
+      if (sendEmail(email, otp, res)) {
         res.status(201).send({
           message:
             "Your Account has been successfully created! Navigate to your email to verify account!",
         });
       }
-    } catch (err) {
-      console.error(err.details);
-      res.status(400).send({ message: err.details[0].message });
-    }
   } catch (err) {
     console.error(err);
     res.status(500).send("Internal server error!");

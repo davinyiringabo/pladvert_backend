@@ -9,8 +9,8 @@ const {
 const express = require("express");
 const router = express.Router();
 router.post("/login", login);
-router.post("/signup/user", signup);
-router.post("/signup/owner", signupOwner);
+router.post("/signup", signup);
+// router.post("/signup", signupOwner);
 router.post("/verify", verifyCode);
 router.post("/sendCode", sendCode);
 router.post("/resetPassword", resetPassword);
