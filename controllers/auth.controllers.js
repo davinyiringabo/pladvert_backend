@@ -8,6 +8,7 @@ const { loginSchema, registerSchema } = require("../models/joi.schema.js");
 const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
 const { generateOTP } = require("../utils/generateOTP.js");
+const sendVerificationEmail = require("../utils/emails/verification.js");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -112,10 +113,133 @@ exports.signup = async (req, res) => {
 };
 exports.signupOwner = (req, res) => {};
 
-exports.verifyCode = (req, res) => {};
+exports.verifyCode = async (req, res) => {
+  const {email, code} = req.body;
+  console.log(email)
+  if(!email || !code) {
+    res.status(400).send({ message: "Provide all required credentials" });
+    return;
+  }
 
-exports.sendCode = (req, res) => {};
+  try{
+    const retrieveQuery = "SELECT * FROM otp WHERE email = $1";
+    const retrievedCode = await client.query(retrieveQuery, [email]);
+    console.log(retrievedCode);
+    if (retrievedCode.rows.length !== 0) {
+      if (retrievedCode.rows[0].otp == code) {
+        const verifiedUser = await client.query(
+          "UPDATE users SET verified = true WHERE email = $1;",
+          [email],
+        );
+        const deleteUser = await client.query("DELETE FROM otp WHERE email = $1", [email]);
+        if(deleteUser){
+          console.log("deleted user --> ",deleteUser);
+          sendVerificationEmail(email).then(()=>{
+            return res
+             .status(200)
+             .send({ message: "Verified account successfully!", status: 200 });
+          }).catch((err)=>{
+            console.error(err);
+            res
+             .status(500)
+             .send({ message: "Internal server error", status: 500 });
+          })
+        }
+      }
+      else{
+        return res.status(401).send({ message: "Invalid Code", status: 401 });
+      }
+    }
 
-exports.resetPassword = (req, res) => {};
+    res.status(401).send({ message: "Invalid user email!", status: 401 });
+  }catch(err){
+    console.error(err);
+    res.status(500).send("Internal server error!");
+  }
+};
+
+exports.sendCode = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    res.status(400).send({ message: "Provide email" });
+    return;
+  }
+
+  console.log(await checkUserExistance(email));
+  if (!(await checkUserExistance(email))) {
+    return res
+      .status(400)
+      .send({ message: "User With the same email doesn't exist!" });
+  }
+
+  try {
+    const otpCode = await generateOTP("nyiringabodavid62@gmail.com", res);
+    if (!otpCode) {
+      return res.status(400).send({
+        message: "Sending Verification Code Failed! Try Again!",
+        status: 400,
+      });
+    }
+
+    if (sendEmail(email, otpCode)) {
+      return res
+        .status(200)
+        .send({ message: `Verification Code sent successfully to ${email}!` });
+    } else {
+      return res.status(200).send({
+        message: `An error occured while sending verification code to ${email}! Try again later.`,
+      });
+    }
+  } catch (err) {
+    console.log("Error occured when sending verification code", err);
+    res.status(400).send({
+      message:
+        "An error occured while sending verification code! Try again later.",
+    });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) {
+    res
+      .status(400)
+      .send({ message: "Please Provide all credentials!", status: 200 });
+  }
+
+  if (!checkUserExistance(email)) {
+    res.status(400).send({ message: "User Not Found!", status: 200 });
+  }
+
+  try {
+    const retrieveUserQuery = "SELECT * FROM users WHERE email = $1";
+    const retrievedUser = await client.query(retrieveUserQuery, [email]);
+
+    if (retrievedUser.rows.length !== 0) {
+      const newEncryptedPassword = await bcrypt.hash(newPassword, 15);
+
+      // Fix the table name in the UPDATE query and use different placeholders for email and password
+      const updatePasswordQuery =
+        "UPDATE users SET password = $1 WHERE email = $2";
+      const updatedRows = await client.query(updatePasswordQuery, [
+        newEncryptedPassword,
+        email,
+      ]);
+      return res
+        .status(200)
+        .send({ message: "Reset password successfully!", status: 200 });
+    }
+
+    return res.status(400).send({ message: "User not found!", status: 400 });
+  } catch (err) {
+    console.log("Error occured when resetting password!", err);
+    return res.status(400).send({
+      message: "Error occured when resetting password! Try again later!",
+      status: 400,
+    });
+  }
+
+};
 
 module.exports = exports;
