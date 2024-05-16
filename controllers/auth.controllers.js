@@ -114,14 +114,14 @@ exports.signup = async (req, res) => {
 exports.signupOwner = (req, res) => {};
 
 exports.verifyCode = async (req, res) => {
-  const {email, code} = req.body;
-  console.log(email)
-  if(!email || !code) {
+  const { email, code } = req.body;
+  console.log(email);
+  if (!email || !code) {
     res.status(400).send({ message: "Provide all required credentials" });
     return;
   }
 
-  try{
+  try {
     const retrieveQuery = "SELECT * FROM otp WHERE email = $1";
     const retrievedCode = await client.query(retrieveQuery, [email]);
     console.log(retrievedCode);
@@ -131,28 +131,35 @@ exports.verifyCode = async (req, res) => {
           "UPDATE users SET verified = true WHERE email = $1;",
           [email],
         );
-        const deleteUser = await client.query("DELETE FROM otp WHERE email = $1", [email]);
-        if(deleteUser){
-          console.log("deleted user --> ",deleteUser);
-          sendVerificationEmail(email).then(()=>{
-            return res
-             .status(200)
-             .send({ message: "Verified account successfully!", status: 200 });
-          }).catch((err)=>{
-            console.error(err);
-            res
-             .status(500)
-             .send({ message: "Internal server error", status: 500 });
-          })
+        const deleteUser = await client.query(
+          "DELETE FROM otp WHERE email = $1",
+          [email],
+        );
+        if (deleteUser) {
+          console.log("deleted user --> ", deleteUser);
+          sendVerificationEmail(email)
+            .then(() => {
+              return res
+                .status(200)
+                .send({
+                  message: "Verified account successfully!",
+                  status: 200,
+                });
+            })
+            .catch((err) => {
+              console.error(err);
+              res
+                .status(500)
+                .send({ message: "Internal server error", status: 500 });
+            });
         }
-      }
-      else{
+      } else {
         return res.status(401).send({ message: "Invalid Code", status: 401 });
       }
     }
 
     res.status(401).send({ message: "Invalid user email!", status: 401 });
-  }catch(err){
+  } catch (err) {
     console.error(err);
     res.status(500).send("Internal server error!");
   }
@@ -200,7 +207,6 @@ exports.sendCode = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
-  
   const { email, newPassword } = req.body;
   if (!email || !newPassword) {
     res
@@ -239,7 +245,6 @@ exports.resetPassword = async (req, res) => {
       status: 400,
     });
   }
-
 };
 
 module.exports = exports;
