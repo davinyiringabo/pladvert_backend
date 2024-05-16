@@ -139,12 +139,10 @@ exports.verifyCode = async (req, res) => {
           console.log("deleted user --> ", deleteUser);
           sendVerificationEmail(email)
             .then(() => {
-              return res
-                .status(200)
-                .send({
-                  message: "Verified account successfully!",
-                  status: 200,
-                });
+              return res.status(200).send({
+                message: "Verified account successfully!",
+                status: 200,
+              });
             })
             .catch((err) => {
               console.error(err);
