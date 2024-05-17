@@ -38,6 +38,8 @@
     "otp-generator": "^4.0.1",
     "pg": "^8.11.5",
     "pgsql": "^1.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1"
   }
 }
