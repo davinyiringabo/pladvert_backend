@@ -15,7 +15,7 @@ const createTransporter = () => {
 const sendEmail = async (email, code, res) => {
   try {
     const transporter = createTransporter();
-    console.log("send email")
+    console.log("send email");
     if (!email || !code) {
       res.send({ message: "Internal Server Error!", status: 400 }).status(400);
       return;
