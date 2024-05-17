@@ -1,408 +1,377 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "Backend Service for accommodations advertisement and booking system",
-        "version": "1.0.5",
-        "title": "Place Pulse",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "email": "nyiringabodavid62@gmail.com"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+  "swagger": "2.0",
+  "info": {
+    "description": "Backend Service for accommodations advertisement and booking system",
+    "version": "1.0.5",
+    "title": "Place Pulse",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "nyiringabodavid62@gmail.com"
     },
-    "host": "localhost:5454",
-    "basePath": "/api/v1",
-    "tags": [
-        {
-            "name": "auth",
-            "description": "Auth apis"
-        },
-        {
-            "name": "user",
-            "description": "Auth apis"
-        },
-        {
-            "name": "accommodations",
-            "externalDocs": {
-                "description": "Find out more",
-                "url": "http://swagger.io"
-            }
-        },
-        {
-            "name": "booking",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "http://swagger.io"
-            }
-        }
-        ,
-        {
-            "name": "payment",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "http://swagger.io"
-            }
-        }
-    ],
-    "schemes": [
-        "http"
-    ],
-    "paths": {
-        "/auth/login": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Login",
-                "description": "Login",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Login object",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/Login"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/ApiResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/signup": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Login object",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/Signup"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/verify": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Login object",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/Verify"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/sendCode": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Login object",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/SendCode"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/resetPassword": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Login object",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/ResetPassword"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/ResetPassword"
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "post": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Save new user",
-                "description": "Save new user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "User object that needs to be added to the database",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/User"
-                    }
-                }],
-                "responses": {
-                    "201": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            },
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Finds all users",
-                "description": "All Users available in the system",
-                "produces": [
-                    "application/json"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/User"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No record found"
-                    }
-                }
-            }
-        },
-        "/users/{email}": {
-            "get": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Find user by email",
-                "description": "Returns a single user",
-                "operationId": "getUserByEmail",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [{
-                    "name": "email",
-                    "in": "path",
-                    "description": "email of course to return",
-                    "required": true,
-                    "type": "string"
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid email supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            }
-        }
-    },
-    "securityDefinitions": {
-        "Bearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        }
-    },
-    "definitions": {
-        "ApiResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "Token": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "firstname": {
-                    "type": "string"
-                },
-                "lastname": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "verified": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "Login": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "Verify": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "string"
-                }
-            }
-        },
-        "ResetPassword": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "newPassword": {
-                    "type": "string"
-                }
-            }
-        },
-        "SendCode": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "Signup": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },"role": {
-                    "type": "string"
-                },"phone": {
-                    "type": "string"
-                }
-            }
-        }
-    },
-    "externalDocs": {
-        "description": "Find out more about Swagger",
-        "url": "http://swagger.io"
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
+  },
+  "host": "localhost:5454",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Auth apis"
+    },
+    {
+      "name": "user",
+      "description": "Auth apis"
+    },
+    {
+      "name": "accommodations",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "booking",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "payment",
+      "externalDocs": {
+        "description": "Find out more about our store",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "schemes": ["http"],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Login",
+        "description": "Login",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": ["auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Signup"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify": {
+      "post": {
+        "tags": ["auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Verify"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/auth/sendCode": {
+      "post": {
+        "tags": ["auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SendCode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/auth/resetPassword": {
+      "post": {
+        "tags": ["auth"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResetPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResetPassword"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Save new user",
+        "description": "Save new user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object that needs to be added to the database",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["user"],
+        "summary": "Finds all users",
+        "description": "All Users available in the system",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "404": {
+            "description": "No record found"
+          }
+        }
+      }
+    },
+    "/users/{email}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Find user by email",
+        "description": "Returns a single user",
+        "operationId": "getUserByEmail",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "email of course to return",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid email supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Token": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Verify": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "ResetPassword": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "SendCode": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "Signup": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
 }

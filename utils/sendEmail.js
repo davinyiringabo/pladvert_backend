@@ -15,14 +15,14 @@ const createTransporter = () => {
 const sendEmail = async (email, code, res) => {
   try {
     const transporter = createTransporter();
-
+    console.log("send email")
     if (!email || !code) {
       res.send({ message: "Internal Server Error!", status: 400 }).status(400);
       return;
     }
 
     const mailOptions = {
-      from: "Your Platform",
+      from: "Place Pulce",
       to: email,
       subject: "Account Verification Code - Place Pulse",
       html: `
@@ -57,7 +57,7 @@ const sendEmail = async (email, code, res) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    // console.log("email sending --> ", info);
+    console.log("email sending --> ", info);
     return true;
   } catch (error) {
     console.error(error);

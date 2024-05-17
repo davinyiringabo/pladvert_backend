@@ -186,7 +186,7 @@ exports.sendCode = async (req, res) => {
       });
     }
 
-    if (sendEmail(email, otpCode)) {
+    if (await sendEmail(email, otpCode)) {
       return res
         .status(200)
         .send({ message: `Verification Code sent successfully to ${email}!` });
