@@ -4,7 +4,7 @@ const generateToken = require("../utils/generateToken.js");
 const sendEmail = require("../utils/sendEmail.js");
 const bcrypt = require("bcrypt");
 const joi = require("joi");
-const { loginSchema, registerSchema } = require("../models/joi.schema.js");
+const { loginSchema, registerSchema, passwordSchema } = require("../models/joi.schema.js");
 const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
 const { generateOTP } = require("../utils/generateOTP.js");
@@ -137,37 +137,30 @@ exports.verifyCode = async (req, res) => {
         );
         if (deleteUser) {
           console.log("deleted user --> ", deleteUser);
-          sendVerificationEmail(email)
+          return sendVerificationEmail(email)
             .then(() => {
               return res.status(200).send({
                 message: "Verified account successfully!",
                 status: 200,
               });
             })
-            .catch((err) => {
-              console.error(err);
-              res
-                .status(500)
-                .send({ message: "Internal server error", status: 500 });
-            });
         }
       } else {
         return res.status(401).send({ message: "Invalid Code", status: 401 });
       }
     }
 
-    res.status(401).send({ message: "Invalid user email!", status: 401 });
+    return res.status(401).send({ message: "Invalid user email!", status: 401 });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal server error!");
+    return res.status(500).send("Internal server error!");
   }
 };
 
 exports.sendCode = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    res.status(400).send({ message: "Provide email" });
-    return;
+    return res.status(400).send({ message: "Provide email" });
   }
 
   console.log(await checkUserExistance(email));
@@ -197,7 +190,7 @@ exports.sendCode = async (req, res) => {
     }
   } catch (err) {
     console.log("Error occured when sending verification code", err);
-    res.status(400).send({
+    return res.status(400).send({
       message:
         "An error occured while sending verification code! Try again later.",
     });
@@ -207,13 +200,21 @@ exports.sendCode = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   const { email, newPassword } = req.body;
   if (!email || !newPassword) {
-    res
+    return res
       .status(400)
       .send({ message: "Please Provide all credentials!", status: 200 });
   }
 
+  const {error} = passwordSchema.validate({
+    password: newPassword
+  });
+
+  if(error){
+    return res.status(400).send({ message: error.details[0].message, status: 400 });
+  }
+
   if (!checkUserExistance(email)) {
-    res.status(400).send({ message: "User Not Found!", status: 200 });
+    return res.status(400).send({ message: "User Not Found!", status: 200 });
   }
 
   try {

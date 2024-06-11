@@ -13,7 +13,7 @@ app.use(cors());
 dotenv.config();
 client.connect();
 app.get("/", (req, res) => {
-  res.send("hello world");
+  res.send("Place Pulse Running 🎉🎉🎉🎊");
 });
 app.use("/api/v1/auth", require("./routes/auth.routes"));
 app.listen(5454, () => {
