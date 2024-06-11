@@ -4,7 +4,11 @@ const generateToken = require("../utils/generateToken.js");
 const sendEmail = require("../utils/sendEmail.js");
 const bcrypt = require("bcrypt");
 const joi = require("joi");
-const { loginSchema, registerSchema, passwordSchema } = require("../models/joi.schema.js");
+const {
+  loginSchema,
+  registerSchema,
+  passwordSchema,
+} = require("../models/joi.schema.js");
 const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
 const { generateOTP } = require("../utils/generateOTP.js");
@@ -137,20 +141,21 @@ exports.verifyCode = async (req, res) => {
         );
         if (deleteUser) {
           console.log("deleted user --> ", deleteUser);
-          return sendVerificationEmail(email)
-            .then(() => {
-              return res.status(200).send({
-                message: "Verified account successfully!",
-                status: 200,
-              });
-            })
+          return sendVerificationEmail(email).then(() => {
+            return res.status(200).send({
+              message: "Verified account successfully!",
+              status: 200,
+            });
+          });
         }
       } else {
         return res.status(401).send({ message: "Invalid Code", status: 401 });
       }
     }
 
-    return res.status(401).send({ message: "Invalid user email!", status: 401 });
+    return res
+      .status(401)
+      .send({ message: "Invalid user email!", status: 401 });
   } catch (err) {
     console.error(err);
     return res.status(500).send("Internal server error!");
@@ -205,12 +210,14 @@ exports.resetPassword = async (req, res) => {
       .send({ message: "Please Provide all credentials!", status: 200 });
   }
 
-  const {error} = passwordSchema.validate({
-    password: newPassword
+  const { error } = passwordSchema.validate({
+    password: newPassword,
   });
 
-  if(error){
-    return res.status(400).send({ message: error.details[0].message, status: 400 });
+  if (error) {
+    return res
+      .status(400)
+      .send({ message: error.details[0].message, status: 400 });
   }
 
   if (!checkUserExistance(email)) {
