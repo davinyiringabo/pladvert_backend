@@ -6,7 +6,7 @@ const authRoutes = require("./routes/auth.routes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger.json");
 const client = require("./database/connection");
-const authMiddleWare = require("./routes/accommodations.routes")
+const authMiddleWare = require("./routes/accommodations.routes");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -17,7 +17,11 @@ app.get("/", (req, res) => {
   res.send("Place Pulse Running 🎉🎉🎉🎊");
 });
 app.use("/api/v1/auth", require("./routes/auth.routes"));
-app.use("/api/v1/accommodation", authMiddleWare , require("./routes/accommodations.routes"));
+app.use(
+  "/api/v1/accommodation",
+  authMiddleWare,
+  require("./routes/accommodations.routes"),
+);
 app.listen(5454, () => {
   console.log("server is running on port 5454");
 });
