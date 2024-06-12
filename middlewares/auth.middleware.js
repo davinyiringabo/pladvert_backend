@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const client = require("../database/connection");
 
-const authMiddleWare = async (req, res, next) => {
+exports.authMiddleWare = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
 
@@ -30,4 +30,4 @@ const authMiddleWare = async (req, res, next) => {
   }
 };
 
-module.exports = authMiddleWare;
+module.exports = exports;
