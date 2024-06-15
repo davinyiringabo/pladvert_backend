@@ -1,4 +1,4 @@
-const { client } = require("../config/database/connect");
+const client = require("../database/connection");
 const checkUserExistance = require("../utils/exists");
 
 exports.updateUser = async (req, res) => {
@@ -114,6 +114,27 @@ exports.getUserById = async (req, res) => {
       .status(400)
       .send({ message: "Please Provide an id!", status: 400 });
   }
+
+  try {
+    const fetchQuery = "SELECT * FROM users WHERE id = $1";
+    const fetchUser = await client.query(fetchQuery, [id]);
+    console.log(fetchUser);
+
+    res.status(200).send({
+      message: "Fetched user successfully!",
+      status: 200,
+      user: fetchUser.rows[0],
+    });
+  } catch (err) {
+    console.log("There was an error while fetching a user: ", err);
+    return res.status(500).send({
+      message: "error occured while fetching the user! try again later!",
+      status: 500,
+    });
+  }
+};
+exports.getMyProfile = async (req, res) => {
+  const id = req.user.id;
 
   try {
     const fetchQuery = "SELECT * FROM users WHERE id = $1";

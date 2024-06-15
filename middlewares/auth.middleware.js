@@ -29,5 +29,3 @@ exports.authMiddleWare = async (req, res, next) => {
     res.status(401).send({ message: "Invalid Token!", status: 401 });
   }
 };
-
-module.exports = exports;
