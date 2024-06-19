@@ -108,7 +108,6 @@ exports.getAllOwnerAccommodations = async (req, res) => {
       "SELECT * FROM accommodations WHERE owner_id = $1",
       [ownerId],
     );
-    console.log(accommodations.rows);
     res.status(200).json({
       message: "Accommodations fetched successfully",
       status: 200,
@@ -127,7 +126,6 @@ exports.getAllOwnerAccommodations = async (req, res) => {
 exports.getAllAccommodations = async (req, res) => {
   try {
     const accommodations = await client.query("SELECT * FROM accommodations");
-    console.log(accommodations.rows);
     res.status(200).json({
       message: "Accommodations fetched successfully",
       status: 200,
@@ -150,7 +148,6 @@ exports.getAccommodationById = async (req, res) => {
       "SELECT * FROM accommodations WHERE id = $1",
       [id],
     );
-    console.log(accommodations.rows);
     res.status(200).json({
       message: "Accommodation fetched successfully",
       status: 200,
@@ -165,12 +162,12 @@ exports.getAccommodationById = async (req, res) => {
     });
   }
 };
-exports.DelteAccommodationById = async (req, res) => {
-  const id = req.params;
+exports.deleteAccommodationById = async (req, res) => {
+  const id = req.params.id;
   console.log("this is id --> ", id);
   try {
     const accommodations = await client.query(
-      "DELETE * FROM accommodations WHERE id = $1",
+      "DELETE FROM accommodations WHERE id = $1",
       [id],
     );
     console.log(accommodations.rows);

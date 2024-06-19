@@ -16,3 +16,14 @@ CREATE TABLE IF NOT EXISTS public.users
     phone character(14) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT user_pkey PRIMARY KEY (id)
 )
+
+CREATE TABLE paymentmethods (
+    id character varying(100) not null PRIMARY KEY,
+    name character varying(200),
+    number integer not null,
+    type character(20) not null,
+    cvc integer,
+    expdate character varying(20),
+    user_id character varying(100) not null,
+    CONSTRAINT pfkey FOREIGN KEY(user_id) REFERENCES users (id)
+);

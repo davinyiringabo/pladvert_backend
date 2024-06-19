@@ -4,6 +4,7 @@ const {
   getAllOwnerAccommodations,
   getAllAccommodations,
   getAccommodationById,
+  deleteAccommodationById,
 } = require("../controllers/accommodations.controllers");
 const { authMiddleWare } = require("../middlewares/auth.middleware");
 const router = express.Router();
@@ -26,6 +27,6 @@ router.post(
 router.get("/getMine", [authMiddleWare], getAllOwnerAccommodations);
 router.get("/all", getAllAccommodations);
 router.get("/get/:id", getAccommodationById);
-router.delete("/delete/:id", getAllAccommodations);
+router.delete("/delete/:id", deleteAccommodationById);
 
 module.exports = router;
