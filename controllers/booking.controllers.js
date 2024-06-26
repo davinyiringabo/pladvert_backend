@@ -14,10 +14,10 @@ exports.registerBooking = async (req, res) => {
     totalPrice,
     image,
     name,
-    status
+    status,
   } = req.body;
   if (
-    !checkIn,
+    (!checkIn,
     !checkOut,
     !accommodationId,
     !paymentType,
@@ -27,11 +27,9 @@ exports.registerBooking = async (req, res) => {
     !totalPrice,
     !image,
     !name,
-    !status
-) {
-    res
-      .status(400)
-      .send({ message: "Fill All Fields", status: 400 });
+    !status)
+  ) {
+    res.status(400).send({ message: "Fill All Fields", status: 400 });
     return;
   }
 
@@ -60,7 +58,9 @@ exports.registerBooking = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ message: "Internal server error", error: err.message });
+    res
+      .status(500)
+      .send({ message: "Internal server error", error: err.message });
     return;
   }
 };
@@ -86,24 +86,22 @@ exports.getMyBookings = async (req, res) => {
   }
 };
 exports.getAllBookings = async (req, res) => {
-    try {
-      const methods = await client.query(
-        "SELECT * FROM bookings"
-      );
-      res.status(200).json({
-        message: "Bookings fetched successfully",
-        status: 200,
-        data: methods.rows,
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({
-        message: "Internal server error",
-        status: 500,
-        data: err,
-      });
-    }
-  };
+  try {
+    const methods = await client.query("SELECT * FROM bookings");
+    res.status(200).json({
+      message: "Bookings fetched successfully",
+      status: 200,
+      data: methods.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+      data: err,
+    });
+  }
+};
 
 exports.deleteBooking = async (req, res) => {
   const id = req.params.id;
