@@ -20,6 +20,7 @@ app.use("/api/v1/auth", require("./routes/auth.routes"));
 app.use("/api/v1/accommodation", require("./routes/accommodations.routes"));
 app.use("/api/v1/users", require("./routes/user.routes"));
 app.use("/api/v1/paymentmethods", require("./routes/paymentmethods.routes"));
+app.use("/api/v1/booking", require("./routes/booking.routes"));
 app.listen(5454, () => {
   console.log("server is running on port 5454");
 });
