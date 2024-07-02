@@ -37,10 +37,8 @@ exports.registerAccommodation = async (req, res) => {
       const result = await cloudinary.uploader.upload(image.path, {
         folder: "uploads",
       });
-      // console.log(result);
       uploadedImages.push(result.secure_url);
 
-      // Delete the file from the server after upload
       await fs.unlink(image.path);
     }
 
@@ -72,6 +70,20 @@ exports.registerAccommodation = async (req, res) => {
           parseInt(rating),
         ],
       );
+      if(type === "hotel") {
+        try{
+          const data = await registerRoomTypes(req)
+          console.log("room type results --> ", data);
+        }
+        catch(err){
+          console.error("Error registering accommodation hotel:", err);
+          return res.status(500).json({
+              message: "Internal server error",
+              status: 500,
+              data: err,
+          });
+      }
+      }
 
       console.log("results", savedData);
       res.status(200).json({

@@ -125,4 +125,25 @@ exports.deleteBooking = async (req, res) => {
   }
 };
 
+exports.getAllOwnerBookings = async (req, res) => {
+  try {
+    const methods = await client.query(
+      "SELECT * FROM bookings WHERE accommodation_owner_id = $1",
+      [req.user.id],
+    );
+    res.status(200).json({
+      message: "Bookings fetched successfully",
+      status: 200,
+      data: methods.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+      data: err,
+    });
+  }
+};
+
 module.exports = exports;
