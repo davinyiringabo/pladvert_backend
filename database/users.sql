@@ -61,3 +61,48 @@ CREATE TABLE IF NOT EXISTS public.bookings
 /*
     booking status can be PENDING | COMPLETED
 */
+
+CREATE TABLE IF NOT EXISTS public.accommodations
+(
+    id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    type character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    price integer NOT NULL,
+    name character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    location character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    discount integer DEFAULT 0,
+    amenities character varying(200)[] COLLATE pg_catalog."default",
+    freebies character varying(200)[] COLLATE pg_catalog."default",
+    stock integer DEFAULT 0,
+    description text COLLATE pg_catalog."default",
+    images character(200)[] COLLATE pg_catalog."default" NOT NULL,
+    owner_id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    rating integer NOT NULL,
+    CONSTRAINT your_table_pkey PRIMARY KEY (id),
+    CONSTRAINT fkey_owner FOREIGN KEY (owner_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+CREATE TABLE IF NOT EXISTS public.hotels
+(
+    id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    accommodation_id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    roomtypes character varying(100)[] COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT hotels_pkey PRIMARY KEY (id),
+    CONSTRAINT fackey FOREIGN KEY (accommodation_id)
+        REFERENCES public.accommodations (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+CREATE TABLE IF NOT EXISTS public.otp
+(
+    email character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    otp integer NOT NULL,
+    CONSTRAINT otp_pkey PRIMARY KEY (email),
+    CONSTRAINT email_fkey FOREIGN KEY (email)
+        REFERENCES public.users (email) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
