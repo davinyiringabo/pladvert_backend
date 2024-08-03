@@ -5,6 +5,8 @@ const {
   getAllAccommodations,
   getAccommodationById,
   deleteAccommodationById,
+  registerRoomType,
+  getHotelById,
 } = require("../controllers/accommodations.controllers");
 const { authMiddleWare } = require("../middlewares/auth.middleware");
 const router = express.Router();
@@ -24,9 +26,15 @@ router.post(
   [upload.array("images", 5), authMiddleWare],
   registerAccommodation,
 );
+router.post(
+  "/roomtype/create",
+  [upload.array("images", 5), authMiddleWare],
+  registerRoomType,
+);
 router.get("/getMine", [authMiddleWare], getAllOwnerAccommodations);
 router.get("/all", getAllAccommodations);
 router.get("/get/:id", getAccommodationById);
+router.get("/hotel/get/:id", getHotelById);
 router.delete("/delete/:id", deleteAccommodationById);
 
 module.exports = router;

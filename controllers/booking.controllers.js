@@ -54,7 +54,7 @@ exports.registerBooking = async (req, res) => {
 
     res.status(200).send({
       message: "Successfully Created Booking",
-      data: data.rows[0],
+      data: bookingId,
     });
   } catch (err) {
     console.error(err);
@@ -64,7 +64,27 @@ exports.registerBooking = async (req, res) => {
     return;
   }
 };
-
+exports.markAsSuccessBooked = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const accommodations = await client.query(
+      "UPDATE bookings SET status = 'COMPLETED' WHERE id = $1",
+      [id],
+    );
+    res.status(200).json({
+      message: "Payment Success!",
+      status: 200,
+      data: accommodations.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Bad request",
+      status: 400,
+      data: err,
+    });
+  }
+};
 exports.getMyBookings = async (req, res) => {
   try {
     const methods = await client.query(
@@ -102,6 +122,24 @@ exports.getAllBookings = async (req, res) => {
     });
   }
 };
+exports.getAllBookedDates = async (req, res) => {
+  const acc_id = req.params.id;
+  try {
+    const days = await client.query("SELECT check_in,check_out FROM bookings WHERE accommodation_id = $1", [acc_id]);
+    res.status(200).json({
+      message: "Booked Days Fetched",
+      status: 200,
+      data: days.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+      data: err,
+    });
+  }
+};
 
 exports.deleteBooking = async (req, res) => {
   const id = req.params.id;
@@ -128,7 +166,7 @@ exports.deleteBooking = async (req, res) => {
 exports.getAllOwnerBookings = async (req, res) => {
   try {
     const methods = await client.query(
-      "SELECT * FROM bookings WHERE accommodation_owner_id = $1",
+      "SELECT * FROM bookings b JOIN users u ON b.user_id=u.id WHERE accommodation_owner_id = $1",
       [req.user.id],
     );
     res.status(200).json({

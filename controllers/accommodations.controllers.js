@@ -2,6 +2,7 @@ const { v2: cloudinary } = require("cloudinary");
 const client = require("../database/connection");
 const fs = require("fs").promises; // to handle file deletion
 const { v4: uuidv4 } = require("uuid");
+const registerRoomTypes = require("../utils/registerAccommodation");
 cloudinary.config({
   cloud_name: "diyhjfgqr",
   api_key: "315646517646365",
@@ -71,9 +72,18 @@ exports.registerAccommodation = async (req, res) => {
         ],
       );
       if (type === "hotel") {
+        const hotelId = uuidv4();
+        const {roomTypes} = req.body;
+        const ids = JSON.parse(roomTypes).map((type)=> type.id);
         try {
-          const data = await registerRoomTypes(req);
-          console.log("room type results --> ", data);
+          const savedData = await client.query(
+            "INSERT INTO hotels (id, accommodation_id, roomTypes) VALUES ($1, $2, $3)",
+            [
+              hotelId,
+              accommodationId,
+              ids,
+            ],
+          );
         } catch (err) {
           console.error("Error registering accommodation hotel:", err);
           return res.status(500).json({
@@ -111,6 +121,54 @@ exports.registerAccommodation = async (req, res) => {
     });
   }
 };
+exports.registerRoomType = async (req, res) => {
+  const { name, price, stock } = req.body;
+  const images = req.files;
+
+  if (!name || !price || !stock || !images) {
+    return res.status(400).json({
+      message: "Please provide required data",
+      status: 400,
+    });
+  }
+
+  try {
+    const uploadedImages = [];
+    for (const image of images) {
+      const result = await cloudinary.uploader.upload(image.path, {
+        folder: "uploads",
+      });
+      uploadedImages.push(result.secure_url ?? "none");
+
+      await fs.unlink(image.path);
+    }
+
+    const accommodationId = uuidv4();
+    await client.query(
+      "INSERT INTO roomtypes (id, price, images, name, stock) VALUES ($1, $2, $3, $4, $5)",
+      [accommodationId, price, uploadedImages, name, parseInt(stock)]
+    );
+
+    res.status(200).json({
+      message: "Room Added successfully",
+      status: 200,
+      data: {
+        name,
+        price,
+        images: uploadedImages,
+        stock,
+        id: accommodationId
+      },
+    });
+  } catch (error) {
+    console.error("Error registering accommodation:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+    });
+  }
+};
+
 
 exports.getAllOwnerAccommodations = async (req, res) => {
   const ownerId = req.user.id;
@@ -151,6 +209,25 @@ exports.getAllAccommodations = async (req, res) => {
     });
   }
 };
+exports.getHotelById = async (req, res) => {
+  const acc_id = req.params.id;
+  try {
+    const hotel = await client.query("SELECT r.*FROM roomtypes r JOIN hotels h ON r.id = ANY(h.roomtypes)WHERE h.accommodation_id = $1", [acc_id]);
+    res.status(200).json({
+      message: "Hotel fetched successfully",
+      status: 200,
+      data: hotel.rows,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+      data: err,
+    });
+  }
+};
+
 exports.getAccommodationById = async (req, res) => {
   const id = req.params.id;
   console.log("this is id --> ", id);

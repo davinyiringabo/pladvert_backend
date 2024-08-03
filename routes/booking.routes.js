@@ -7,6 +7,8 @@ const {
   deleteBooking,
   getAllBookings,
   getAllOwnerBookings,
+  markAsSuccessBooked,
+  getAllBookedDates,
 } = require("../controllers/booking.controllers");
 
 router.post("/create", authMiddleWare, registerBooking);
@@ -14,5 +16,6 @@ router.get("/getMine", authMiddleWare, getMyBookings);
 router.get("/owner/getAll", authMiddleWare, getAllOwnerBookings);
 router.get("/all", authMiddleWare, getAllBookings);
 router.delete("/delete/:id", authMiddleWare, deleteBooking);
-
+router.get("/payment/complete/:id", [authMiddleWare], markAsSuccessBooked);
+router.get("/booked_days/:id", getAllBookedDates);
 module.exports = router;

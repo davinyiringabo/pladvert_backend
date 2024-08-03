@@ -1,3 +1,9 @@
+const { v2: cloudinary } = require("cloudinary");
+cloudinary.config({
+  cloud_name: "diyhjfgqr",
+  api_key: "315646517646365",
+  api_secret: "dby7roqyWWAAJ8Zk8ZRLl9KN8-w",
+});
 const registerRoomTypes = async (req) => {
   const { roomTypes } = req.body;
 
@@ -32,3 +38,5 @@ const registerRoomTypes = async (req) => {
   //     });
   // }
 };
+
+module.exports = registerRoomTypes;

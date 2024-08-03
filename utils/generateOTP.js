@@ -1,7 +1,9 @@
 const otpGenerator = require("otp-generator");
 const checkUserExistance = require("./exists");
 const client = require("../database/connection.js");
+
 const generateOTP = async (email, res) => {
+  // Generate a 6-digit OTP
   const otp = otpGenerator.generate(6, {
     digits: true,
     lowerCaseAlphabets: false,
@@ -11,22 +13,23 @@ const generateOTP = async (email, res) => {
   console.log(otp);
 
   try {
-    if (checkUserExistance(email)) {
-      const deleteExistingCode = await client.query(
-        "DELETE FROM otp WHERE email = $1;",
-        [email],
-      );
-      const insertQuery = "INSERT INTO otp (email,otp) values ($1,$2);";
-      const insertedRaws = await client.query(insertQuery, [email, otp]);
-      console.log("inserted otp Rows:", insertedRaws);
+    // Check if the user exists
+    if (await checkUserExistance(email)) {
+      const insertQuery = "INSERT INTO otp (email, otp) VALUES ($1, $2);";
+      const result = await client.query(insertQuery, [email, otp]);
+      
+      console.log("Inserted OTP Rows:", result.rowCount); // Changed 'insertedRaws' to 'result.rowCount'
       return otp;
     } else {
       console.log("User does not exist");
-      res.status(400).send({ message: "User with that email does not exist!" });
-      return;
+      // Return response indicating the user does not exist
+      return res.status(400).send({ message: "User with that email does not exist!" });
     }
   } catch (err) {
-    console.log("Error when inserting OTP:", err);
+    console.error("Error when inserting OTP:", err);
+    // Return a server error response
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 };
+
 module.exports.generateOTP = generateOTP;

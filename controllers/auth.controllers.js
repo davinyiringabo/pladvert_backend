@@ -164,19 +164,15 @@ exports.verifyCode = async (req, res) => {
 
 exports.sendCode = async (req, res) => {
   const { email } = req.body;
+
+  // Validate the email
   if (!email) {
     return res.status(400).send({ message: "Provide email" });
   }
 
-  console.log(await checkUserExistance(email));
-  if (!(await checkUserExistance(email))) {
-    return res
-      .status(400)
-      .send({ message: "User With the same email doesn't exist!" });
-  }
-
   try {
-    const otpCode = await generateOTP("nyiringabodavid62@gmail.com", res);
+    // Generate OTP for the provided email
+    const otpCode = await generateOTP(email, res);
     if (!otpCode) {
       return res.status(400).send({
         message: "Sending Verification Code Failed! Try Again!",
@@ -184,20 +180,18 @@ exports.sendCode = async (req, res) => {
       });
     }
 
+    // Send OTP via email
     if (await sendEmail(email, otpCode)) {
-      return res
-        .status(200)
-        .send({ message: `Verification Code sent successfully to ${email}!` });
+      return res.status(200).send({ message: `Verification Code sent successfully to ${email}!` });
     } else {
-      return res.status(200).send({
-        message: `An error occured while sending verification code to ${email}! Try again later.`,
+      return res.status(500).send({
+        message: `An error occurred while sending verification code to ${email}! Try again later.`,
       });
     }
   } catch (err) {
-    console.log("Error occured when sending verification code", err);
-    return res.status(400).send({
-      message:
-        "An error occured while sending verification code! Try again later.",
+    console.error("Error occurred when sending verification code", err);
+    return res.status(500).send({
+      message: "An error occurred while sending verification code! Try again later.",
     });
   }
 };
