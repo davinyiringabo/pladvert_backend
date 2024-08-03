@@ -1,10 +1,5 @@
 const pg = require("pg");
-const { Client } = pg;
-const client = new Client({
-  user: "default",
-  host: "ep-curly-snow-a4vhdch7-pooler.us-east-1.aws.neon.tech",
-  port: "5432",
-  database: "verceldb",
-  password: "fe1v6bzPxVnX",
+const client = new pg.Pool({
+  connectionString: "postgres://default:fe1v6bzPxVnX@ep-curly-snow-a4vhdch7-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
 });
 module.exports = client;
