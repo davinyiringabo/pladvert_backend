@@ -182,7 +182,9 @@ exports.sendCode = async (req, res) => {
 
     // Send OTP via email
     if (await sendEmail(email, otpCode)) {
-      return res.status(200).send({ message: `Verification Code sent successfully to ${email}!` });
+      return res
+        .status(200)
+        .send({ message: `Verification Code sent successfully to ${email}!` });
     } else {
       return res.status(500).send({
         message: `An error occurred while sending verification code to ${email}! Try again later.`,
@@ -191,7 +193,8 @@ exports.sendCode = async (req, res) => {
   } catch (err) {
     console.error("Error occurred when sending verification code", err);
     return res.status(500).send({
-      message: "An error occurred while sending verification code! Try again later.",
+      message:
+        "An error occurred while sending verification code! Try again later.",
     });
   }
 };

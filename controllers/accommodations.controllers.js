@@ -73,16 +73,12 @@ exports.registerAccommodation = async (req, res) => {
       );
       if (type === "hotel") {
         const hotelId = uuidv4();
-        const {roomTypes} = req.body;
-        const ids = JSON.parse(roomTypes).map((type)=> type.id);
+        const { roomTypes } = req.body;
+        const ids = JSON.parse(roomTypes).map((type) => type.id);
         try {
           const savedData = await client.query(
             "INSERT INTO hotels (id, accommodation_id, roomTypes) VALUES ($1, $2, $3)",
-            [
-              hotelId,
-              accommodationId,
-              ids,
-            ],
+            [hotelId, accommodationId, ids],
           );
         } catch (err) {
           console.error("Error registering accommodation hotel:", err);
@@ -146,7 +142,7 @@ exports.registerRoomType = async (req, res) => {
     const accommodationId = uuidv4();
     await client.query(
       "INSERT INTO roomtypes (id, price, images, name, stock) VALUES ($1, $2, $3, $4, $5)",
-      [accommodationId, price, uploadedImages, name, parseInt(stock)]
+      [accommodationId, price, uploadedImages, name, parseInt(stock)],
     );
 
     res.status(200).json({
@@ -157,7 +153,7 @@ exports.registerRoomType = async (req, res) => {
         price,
         images: uploadedImages,
         stock,
-        id: accommodationId
+        id: accommodationId,
       },
     });
   } catch (error) {
@@ -168,7 +164,6 @@ exports.registerRoomType = async (req, res) => {
     });
   }
 };
-
 
 exports.getAllOwnerAccommodations = async (req, res) => {
   const ownerId = req.user.id;
@@ -212,7 +207,10 @@ exports.getAllAccommodations = async (req, res) => {
 exports.getHotelById = async (req, res) => {
   const acc_id = req.params.id;
   try {
-    const hotel = await client.query("SELECT r.*FROM roomtypes r JOIN hotels h ON r.id = ANY(h.roomtypes)WHERE h.accommodation_id = $1", [acc_id]);
+    const hotel = await client.query(
+      "SELECT r.*FROM roomtypes r JOIN hotels h ON r.id = ANY(h.roomtypes)WHERE h.accommodation_id = $1",
+      [acc_id],
+    );
     res.status(200).json({
       message: "Hotel fetched successfully",
       status: 200,

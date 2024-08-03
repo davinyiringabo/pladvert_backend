@@ -17,13 +17,15 @@ const generateOTP = async (email, res) => {
     if (await checkUserExistance(email)) {
       const insertQuery = "INSERT INTO otp (email, otp) VALUES ($1, $2);";
       const result = await client.query(insertQuery, [email, otp]);
-      
+
       console.log("Inserted OTP Rows:", result.rowCount); // Changed 'insertedRaws' to 'result.rowCount'
       return otp;
     } else {
       console.log("User does not exist");
       // Return response indicating the user does not exist
-      return res.status(400).send({ message: "User with that email does not exist!" });
+      return res
+        .status(400)
+        .send({ message: "User with that email does not exist!" });
     }
   } catch (err) {
     console.error("Error when inserting OTP:", err);

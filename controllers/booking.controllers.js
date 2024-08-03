@@ -125,7 +125,10 @@ exports.getAllBookings = async (req, res) => {
 exports.getAllBookedDates = async (req, res) => {
   const acc_id = req.params.id;
   try {
-    const days = await client.query("SELECT check_in,check_out FROM bookings WHERE accommodation_id = $1", [acc_id]);
+    const days = await client.query(
+      "SELECT check_in,check_out FROM bookings WHERE accommodation_id = $1",
+      [acc_id],
+    );
     res.status(200).json({
       message: "Booked Days Fetched",
       status: 200,
