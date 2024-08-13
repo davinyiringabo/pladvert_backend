@@ -6,7 +6,6 @@
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "node server.js",
-    "prepare": "husky",
     "format": "prettier --write ./"
   },
   "repository": {

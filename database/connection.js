@@ -7,3 +7,10 @@ const client = new pg.Pool({
   },
 });
 module.exports = client;
+client.connect()
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.error('Database connection error', err.stack));
+client.on('error', (err) => {
+  console.error('Unexpected error on idle client -- connecting to db', err);
+  process.exit(-1);
+});
