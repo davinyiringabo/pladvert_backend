@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const client = require("../database/connection");
 
 exports.authMiddleWare = async (req, res, next) => {
+  console.log("token", req.headers.authorization);
+  const token = req.headers.authorization.split(" ")[1];
   try {
-    const token = req.headers.authorization.split(" ")[1];
-
     if (!token) {
       return res
         .status(401)

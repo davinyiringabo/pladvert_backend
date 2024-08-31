@@ -154,3 +154,22 @@ exports.getMyProfile = async (req, res) => {
     });
   }
 };
+exports.getAllOwners = async (req, res) => {
+  try {
+    const fetchQuery = "SELECT * FROM users WHERE ROLE = 'OWNER'";
+    const fetchUsers = await client.query(fetchQuery);
+    console.log(fetchUsers);
+
+    res.status(200).send({
+      message: "Fetched owners successfully!",
+      status: 200,
+      data: fetchUsers.rows,
+    });
+  } catch (err) {
+    console.log("There was an error while fetching owners: ", err);
+    return res.status(500).send({
+      message: "error occured while fetching the owners! try again later!",
+      status: 500,
+    });
+  }
+};

@@ -122,6 +122,25 @@ exports.getAllBookings = async (req, res) => {
     });
   }
 };
+exports.getAllBookingsEarnings = async (req, res) => {
+  try {
+    const earnings = await client.query(
+      "SELECT SUM(payment_total) as total_earnings FROM bookings",
+    );
+    res.status(200).json({
+      message: "Earnings fetched successfully",
+      status: 200,
+      data: earnings.rows[0].total_earnings,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+      data: err,
+    });
+  }
+};
 exports.getAllBookedDates = async (req, res) => {
   const acc_id = req.params.id;
   try {

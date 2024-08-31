@@ -7,6 +7,7 @@ const {
   deleteAccommodationById,
   registerRoomType,
   getHotelById,
+  registerAccommodationByAdmin,
 } = require("../controllers/accommodations.controllers");
 const { authMiddleWare } = require("../middlewares/auth.middleware");
 const router = express.Router();
@@ -25,6 +26,11 @@ router.post(
   "/create",
   [upload.array("images", 5), authMiddleWare],
   registerAccommodation,
+);
+router.post(
+  "/create/byadmin",
+  [upload.array("images", 5), authMiddleWare],
+  registerAccommodationByAdmin,
 );
 router.post(
   "/roomtype/create",

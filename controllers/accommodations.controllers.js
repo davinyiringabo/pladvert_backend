@@ -117,6 +117,114 @@ exports.registerAccommodation = async (req, res) => {
     });
   }
 };
+exports.registerAccommodationByAdmin = async (req, res) => {
+  const {
+    name,
+    location,
+    type,
+    price,
+    amenities,
+    discount,
+    freebies,
+    stock,
+    description,
+    rating,
+    owner,
+  } = req.body;
+  const images = req.files;
+  console.log("owner", owner);
+  if (!name || !location || !images || !type || !price || !owner) {
+    return res.status(400).json({
+      message: "Please provide required data",
+      status: 400,
+    });
+  }
+
+  try {
+    const uploadedImages = [];
+    for (const image of images) {
+      const result = await cloudinary.uploader.upload(image.path, {
+        folder: "uploads",
+      });
+      uploadedImages.push(result.secure_url);
+
+      await fs.unlink(image.path);
+    }
+
+    console.log({
+      name,
+      location,
+      type,
+      price,
+      images: uploadedImages,
+    });
+
+    try {
+      const accommodationId = uuidv4();
+      const savedData = await client.query(
+        "INSERT INTO accommodations (id, type, price, images, owner_id, name, location, discount, amenities, freebies, stock, description, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
+        [
+          accommodationId,
+          type,
+          price,
+          uploadedImages,
+          owner,
+          name,
+          location,
+          discount,
+          [JSON.parse(amenities)],
+          [JSON.parse(freebies)],
+          stock,
+          description,
+          parseInt(rating),
+        ],
+      );
+      if (type === "hotel") {
+        const hotelId = uuidv4();
+        const { roomTypes } = req.body;
+        const ids = JSON.parse(roomTypes).map((type) => type.id);
+        try {
+          const savedData = await client.query(
+            "INSERT INTO hotels (id, accommodation_id, roomTypes) VALUES ($1, $2, $3)",
+            [hotelId, accommodationId, ids],
+          );
+        } catch (err) {
+          console.error("Error registering accommodation hotel:", err);
+          return res.status(500).json({
+            message: "Internal server error",
+            status: 500,
+            data: err,
+          });
+        }
+      }
+
+      console.log("results", savedData);
+      res.status(200).json({
+        message: "Accommodation registered successfully",
+        status: 200,
+        data: {
+          name,
+          location,
+          type,
+          price,
+          images: uploadedImages,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        message: "Internal server error",
+        status: 500,
+      });
+    }
+  } catch (error) {
+    console.error("Error registering accommodation:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      status: 500,
+    });
+  }
+};
 exports.registerRoomType = async (req, res) => {
   const { name, price, stock } = req.body;
   const images = req.files;
