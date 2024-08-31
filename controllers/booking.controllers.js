@@ -1,4 +1,5 @@
 const client = require("../database/connection");
+const createNotification = require("../utils/createNotification.js");
 const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
 
@@ -70,6 +71,10 @@ exports.markAsSuccessBooked = async (req, res) => {
     const accommodations = await client.query(
       "UPDATE bookings SET status = 'COMPLETED' WHERE id = $1",
       [id],
+    );
+    createNotification(
+      `You have successfully booked for an accommodation `,
+      req.user.id,
     );
     res.status(200).json({
       message: "Payment Success!",
@@ -175,6 +180,7 @@ exports.deleteBooking = async (req, res) => {
       status: 200,
       data: methods.rows,
     });
+    createNotification(`You have successfully deleted a booking`, req.user.id);
   } catch (err) {
     console.log(err);
     return res.status(500).json({

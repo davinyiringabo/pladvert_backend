@@ -106,3 +106,9 @@ CREATE TABLE IF NOT EXISTS public.otp
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
+
+CREATE TABLE notifications (
+ id varchar(100) PRIMARY KEY NOT NULL,
+ message varchar(100) NOT NULL,
+ recipient varchar(100) NOT NULL
+);

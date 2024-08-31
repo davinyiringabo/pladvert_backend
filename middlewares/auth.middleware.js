@@ -3,14 +3,14 @@ const client = require("../database/connection");
 
 exports.authMiddleWare = async (req, res, next) => {
   console.log("token", req.headers.authorization);
-  const token = req.headers.authorization.split(" ")[1];
+  const JWTtoken = req.headers.authorization;
   try {
-    if (!token) {
+    if (!JWTtoken) {
       return res
         .status(401)
         .send({ message: "Unauthorized to perform this action!", status: 401 });
     }
-
+    const token = JWTtoken.split(" ")[1];
     const decoded = jwt.verify(token, "jakarabotiboardi");
     const currentTimeStamp = Math.floor(new Date() / 1000);
     if (decoded.exp && decoded.exp <= currentTimeStamp) {

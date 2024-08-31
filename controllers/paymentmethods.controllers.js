@@ -13,6 +13,7 @@ const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
 const { generateOTP } = require("../utils/generateOTP.js");
 const sendVerificationEmail = require("../utils/emails/verification.js");
+const createNotification = require("../utils/createNotification.js");
 
 exports.registerPaymentMethod = async (req, res) => {
   const { number, name, type, cvc, expdate } = req.body;
@@ -36,7 +37,10 @@ exports.registerPaymentMethod = async (req, res) => {
       expdate,
       req.user.id,
     ]);
-
+    createNotification(
+      `You have successfully added a new payment method`,
+      req.user.id,
+    );
     res.status(200).send({
       message: "Successfully Added Payment Method",
       data: data.rows[0],

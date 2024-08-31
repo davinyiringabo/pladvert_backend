@@ -3,6 +3,7 @@ const client = require("../database/connection");
 const fs = require("fs").promises; // to handle file deletion
 const { v4: uuidv4 } = require("uuid");
 const registerRoomTypes = require("../utils/registerAccommodation");
+const createNotification = require("../utils/createNotification");
 cloudinary.config({
   cloud_name: "diyhjfgqr",
   api_key: "315646517646365",
@@ -89,7 +90,10 @@ exports.registerAccommodation = async (req, res) => {
           });
         }
       }
-
+      createNotification(
+        `You have successfully created ${name} accommodation `,
+        req.user.id,
+      );
       console.log("results", savedData);
       res.status(200).json({
         message: "Accommodation registered successfully",
@@ -197,7 +201,10 @@ exports.registerAccommodationByAdmin = async (req, res) => {
           });
         }
       }
-
+      createNotification(
+        `You have successfully created ${name} ${type} accommodation `,
+        owner,
+      );
       console.log("results", savedData);
       res.status(200).json({
         message: "Accommodation registered successfully",
@@ -365,6 +372,10 @@ exports.deleteAccommodationById = async (req, res) => {
       [id],
     );
     console.log(accommodations.rows);
+    createNotification(
+      `You have successfully deleted ${name} ${type} accommodation `,
+      owner,
+    );
     res.status(200).json({
       message: "Accommodation Deleted successfully",
       status: 200,

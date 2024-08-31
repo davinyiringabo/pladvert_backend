@@ -13,6 +13,7 @@ const checkUserExistance = require("../utils/exists.js");
 const { v4: uuidv4 } = require("uuid");
 const { generateOTP } = require("../utils/generateOTP.js");
 const sendVerificationEmail = require("../utils/emails/verification.js");
+const { createNotification } = require("./notifications.controllers.js");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -235,6 +236,7 @@ exports.resetPassword = async (req, res) => {
         newEncryptedPassword,
         email,
       ]);
+      createNotification(`New password was created successfully!`, req.user.id);
       return res
         .status(200)
         .send({ message: "Reset password successfully!", status: 200 });

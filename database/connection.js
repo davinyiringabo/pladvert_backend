@@ -1,3 +1,5 @@
+const Pusher = require("pusher");
+
 const pg = require("pg");
 const client = new pg.Pool({
   connectionString:
@@ -14,4 +16,12 @@ client
 client.on("error", (err) => {
   console.error("Unexpected error on idle client -- connecting to db", err);
   process.exit(-1);
+});
+
+const pusher = new Pusher({
+  appId: "1858115",
+  key: "1fd01353c69cbcec40d3",
+  secret: "cf2f04f8dc48a33858fd",
+  cluster: "ap2",
+  useTLS: true,
 });
