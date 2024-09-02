@@ -367,14 +367,16 @@ exports.deleteAccommodationById = async (req, res) => {
   const id = req.params.id;
   console.log("this is id --> ", id);
   try {
+    const accommodation = await client.query("SELECT * FROM accommodations WHERE id = $1", [id]);
+    console.log(accommodation.rows[0]);
     const accommodations = await client.query(
       "DELETE FROM accommodations WHERE id = $1",
       [id],
     );
     console.log(accommodations.rows);
     createNotification(
-      `You have successfully deleted ${name} ${type} accommodation `,
-      owner,
+      `You have successfully deleted ${accommodation?.rows[0]?.name ?? ""} ${accommodation?.rows[0]?.type ?? ""} accommodation `,
+      accommodation.rows[0].owner_id,
     );
     res.status(200).json({
       message: "Accommodation Deleted successfully",
